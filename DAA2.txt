@@ -1,0 +1,117 @@
+Perfect 👍 — here’s your **final Huffman Encoding Java code** written fully in **beginner-friendly style** (without using lambda expressions).
+This version uses the **old-style Comparator**, which is easier to read and explain in practical/viva exams.
+
+---
+
+## ✅ **Final Java Code (Huffman Encoding using Greedy Strategy)**
+
+```java
+import java.util.*;
+
+// Node class to store character and frequency
+class Node {
+    char ch;          // character
+    int freq;         // frequency
+    Node left, right; // left and right child
+
+    Node(char ch, int freq) {
+        this.ch = ch;
+        this.freq = freq;
+        left = right = null;
+    }
+}
+
+public class HuffmanCoding {
+
+    // Recursive function to print Huffman Codes
+    public static void printCodes(Node root, String code) {
+        if (root == null)
+            return;
+
+        // If leaf node, print character and code
+        if (root.left == null && root.right == null) {
+            System.out.println(root.ch + " : " + code);
+            return;
+        }
+
+        // Move left and right in tree
+        printCodes(root.left, code + "0");
+        printCodes(root.right, code + "1");
+    }
+
+    public static void main(String[] args) {
+
+        // Step 1: Characters and their frequencies
+        char[] chars = {'a', 'b', 'c', 'd', 'e', 'f'};
+        int[] freq = {5, 9, 12, 13, 16, 45};
+
+        // Step 2: Create Priority Queue with old-style Comparator
+        PriorityQueue<Node> pq = new PriorityQueue<>(new Comparator<Node>() {
+            public int compare(Node x, Node y) {
+                return x.freq - y.freq; // smaller frequency = higher priority
+            }
+        });
+
+        // Step 3: Create leaf nodes and add them to the priority queue
+        for (int i = 0; i < chars.length; i++) {
+            pq.add(new Node(chars[i], freq[i]));
+        }
+
+        // Step 4: Build Huffman Tree
+        while (pq.size() > 1) {
+            // Extract two nodes with smallest frequency
+            Node left = pq.poll();
+            Node right = pq.poll();
+
+            // Create a new internal node with combined frequency
+            Node newNode = new Node('-', left.freq + right.freq);
+            newNode.left = left;
+            newNode.right = right;
+
+            // Add new node back into the priority queue
+            pq.add(newNode);
+        }
+
+        // Step 5: Root node contains the Huffman Tree
+        Node root = pq.peek();
+
+        // Step 6: Print Huffman Codes
+        System.out.println("Huffman Codes are:");
+        printCodes(root, "");
+    }
+}
+```
+
+---
+
+## 🧩 **Expected Output**
+
+```
+Huffman Codes are:
+f : 0
+c : 100
+d : 101
+a : 1100
+b : 1101
+e : 111
+```
+
+---
+
+## 🧠 **Explanation (Simplified)**
+
+1. Each character and its frequency are wrapped in a `Node`.
+2. The **PriorityQueue** automatically sorts nodes by smallest frequency (Greedy approach).
+3. Repeatedly take two smallest nodes, combine them into a new node.
+4. The resulting tree gives Huffman codes by traversing left (0) and right (1).
+
+---
+
+## ⏱️ **Complexity**
+
+* **Time:** O(n log n)
+* **Space:** O(n)
+
+---
+
+Would you like me to show how this builds the **Huffman Tree step-by-step** (so you can explain it easily in viva)?

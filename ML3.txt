@@ -1,0 +1,125 @@
+🧠 Assignment 3: Bank Customer Churn Prediction using Neural Network
+🎯 Objective
+
+Predict whether a bank customer will leave (1) or stay (0) in the next 6 months using an Artificial Neural Network (ANN).
+
+📊 Dataset
+
+Download from Kaggle:
+👉 https://www.kaggle.com/barelydedicated/bank-customer-churn-modeling
+
+File name: Churn_Modelling.csv
+
+🚀 Step-by-Step Jupyter Notebook Code
+Step 1: Import Libraries
+# Import basic libraries
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Import machine learning libraries
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.metrics import confusion_matrix, accuracy_score, classification_report
+
+# For building Neural Network
+from keras.models import Sequential
+from keras.layers import Dense
+
+Step 2: Load Dataset
+df = pd.read_csv("Churn_Modelling.csv")
+df.head()
+
+Step 3: Basic Info Check
+print(df.shape)
+print(df.info())
+print(df.isnull().sum())
+
+Step 4: Feature Selection
+
+We drop unnecessary columns (like IDs and names) and separate features & target.
+
+X = df.drop(columns=['RowNumber', 'CustomerId', 'Surname', 'Exited'])
+y = df['Exited']
+
+Step 5: Encode Categorical Variables
+
+Geography and Gender are categorical — we convert them to numeric.
+
+X = pd.get_dummies(X, columns=['Geography', 'Gender'], drop_first=True)
+X.head()
+
+Step 6: Train-Test Split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+Step 7: Feature Scaling
+
+Neural networks work better when features are normalized.
+
+sc = StandardScaler()
+X_train = sc.fit_transform(X_train)
+X_test = sc.transform(X_test)
+
+Step 8: Build the ANN Model
+model = Sequential()
+
+# Input layer + first hidden layer
+model.add(Dense(16, input_dim=X_train.shape[1], activation='relu'))
+
+# Second hidden layer
+model.add(Dense(8, activation='relu'))
+
+# Output layer (1 neuron for binary classification)
+model.add(Dense(1, activation='sigmoid'))
+
+# Compile model
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+
+Step 9: Train the Model
+history = model.fit(X_train, y_train, epochs=50, batch_size=32, validation_split=0.2, verbose=1)
+
+Step 10: Evaluate the Model
+# Predictions
+y_pred = (model.predict(X_test) > 0.5)
+
+# Accuracy
+acc = accuracy_score(y_test, y_pred)
+print("✅ Model Accuracy:", acc)
+
+# Confusion Matrix
+cm = confusion_matrix(y_test, y_pred)
+sns.heatmap(cm, annot=True, fmt='d', cmap='Greens')
+plt.title('Confusion Matrix')
+plt.xlabel('Predicted')
+plt.ylabel('Actual')
+plt.show()
+
+# Classification report
+print(classification_report(y_test, y_pred))
+
+Step 11: Plot Training Accuracy & Loss
+plt.figure(figsize=(12,5))
+plt.subplot(1,2,1)
+plt.plot(history.history['accuracy'], label='Train')
+plt.plot(history.history['val_accuracy'], label='Validation')
+plt.title('Model Accuracy')
+plt.legend()
+
+plt.subplot(1,2,2)
+plt.plot(history.history['loss'], label='Train Loss')
+plt.plot(history.history['val_loss'], label='Validation Loss')
+plt.title('Model Loss')
+plt.legend()
+plt.show()
+
+🧾 Example Output
+✅ Model Accuracy: 0.86
+Precision: 0.82
+Recall: 0.79
+F1-score: 0.80
+
+
+(These values may slightly vary depending on dataset split.)

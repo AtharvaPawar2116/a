@@ -1,0 +1,127 @@
+Here’s a **simple, mark-scoring QuickSort code in Java** that you can safely submit for assignments.
+I’ve included **clear comments** so you understand each part of the algorithm.
+
+---
+
+### ✅ **QuickSort (Deterministic Partition) – Java Code**
+
+```java
+// QuickSort using Deterministic Partition (Last element as Pivot)
+public class QuickSortDeterministic {
+    
+    // Function to partition the array
+    static int partition(int arr[], int low, int high) {
+        int pivot = arr[high]; // choosing last element as pivot
+        int i = (low - 1);     // index of smaller element
+        
+        for (int j = low; j < high; j++) {
+            if (arr[j] <= pivot) { // if current element <= pivot
+                i++;
+                // swap arr[i] and arr[j]
+                int temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+            }
+        }
+        
+        // swap arr[i+1] and pivot
+        int temp = arr[i + 1];
+        arr[i + 1] = arr[high];
+        arr[high] = temp;
+
+        return i + 1; // return partition index
+    }
+
+    // Main QuickSort function
+    static void quickSort(int arr[], int low, int high) {
+        if (low < high) {
+            int pi = partition(arr, low, high);
+            // Recursively sort left and right parts
+            quickSort(arr, low, pi - 1);
+            quickSort(arr, pi + 1, high);
+        }
+    }
+
+    // Driver Code
+    public static void main(String args[]) {
+        int arr[] = {10, 7, 8, 9, 1, 5};
+        int n = arr.length;
+
+        System.out.println("Original Array:");
+        for (int x : arr)
+            System.out.print(x + " ");
+
+        quickSort(arr, 0, n - 1);
+
+        System.out.println("\nSorted Array:");
+        for (int x : arr)
+            System.out.print(x + " ");
+    }
+}
+```
+
+---
+
+### ✅ **QuickSort (Randomized Partition) – Java Code**
+
+```java
+import java.util.Random;
+
+// QuickSort using Randomized Pivot
+public class QuickSortRandomized {
+
+    static Random rand = new Random();
+
+    // Randomized partition
+    static int randomizedPartition(int arr[], int low, int high) {
+        int pivotIndex = low + rand.nextInt(high - low + 1); // pick random pivot
+        // swap random pivot with last element
+        int temp = arr[pivotIndex];
+        arr[pivotIndex] = arr[high];
+        arr[high] = temp;
+
+        // now use normal deterministic partition
+        return partition(arr, low, high);
+    }
+
+    static int partition(int arr[], int low, int high) {
+        int pivot = arr[high];
+        int i = (low - 1);
+        for (int j = low; j < high; j++) {
+            if (arr[j] <= pivot) {
+                i++;
+                int temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+            }
+        }
+        int temp = arr[i + 1];
+        arr[i + 1] = arr[high];
+        arr[high] = temp;
+        return i + 1;
+    }
+
+    static void quickSort(int arr[], int low, int high) {
+        if (low < high) {
+            int pi = randomizedPartition(arr, low, high);
+            quickSort(arr, low, pi - 1);
+            quickSort(arr, pi + 1, high);
+        }
+    }
+
+    public static void main(String args[]) {
+        int arr[] = {12, 4, 5, 3, 8, 7};
+        int n = arr.length;
+
+        System.out.println("Original Array:");
+        for (int x : arr)
+            System.out.print(x + " ");
+
+        quickSort(arr, 0, n - 1);
+
+        System.out.println("\nSorted Array:");
+        for (int x : arr)
+            System.out.print(x + " ");
+    }
+}
+

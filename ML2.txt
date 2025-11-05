@@ -1,0 +1,126 @@
+📧 Assignment 2: Email Spam Detection using KNN & SVM
+🎯 Objective
+
+Classify emails as Spam (1) or Not Spam (0) using:
+
+K-Nearest Neighbors (KNN)
+
+Support Vector Machine (SVM)
+Then analyze accuracy, confusion matrix, precision, recall, and F1-score.
+
+🚀 Step-by-Step Jupyter Code
+Step 1: Import Required Libraries
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score, f1_score
+
+Step 2: Load Dataset
+
+📂 Download from: https://www.kaggle.com/datasets/balaka18/email-spam-classification-dataset-csv
+
+df = pd.read_csv("spam.csv")   # replace with actual filename
+df.head()
+
+Step 3: Check Dataset Info
+print(df.shape)
+print(df.info())
+print(df.isnull().sum())
+
+
+You should see around 5172 rows × 3002 columns.
+The last column (often named label or similar) is the target — 1 for spam, 0 for not spam.
+
+Step 4: Split Features and Target
+# Assuming last column is the target (label)
+X = df.iloc[:, 1:-1]   # all columns except email ID and target
+y = df.iloc[:, -1]     # last column is label (0/1)
+
+Step 5: Train-Test Split
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+Step 6: Feature Scaling
+
+KNN and SVM both depend on distance, so scaling is mandatory.
+
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+Step 7: Train KNN Model
+knn = KNeighborsClassifier(n_neighbors=5)
+knn.fit(X_train, y_train)
+y_pred_knn = knn.predict(X_test)
+
+Step 8: Evaluate KNN Model
+print("📊 KNN Model Evaluation:")
+print("Accuracy:", accuracy_score(y_test, y_pred_knn))
+print("Precision:", precision_score(y_test, y_pred_knn))
+print("Recall:", recall_score(y_test, y_pred_knn))
+print("F1 Score:", f1_score(y_test, y_pred_knn))
+
+cm_knn = confusion_matrix(y_test, y_pred_knn)
+sns.heatmap(cm_knn, annot=True, fmt="d", cmap="Blues")
+plt.title("KNN Confusion Matrix")
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+plt.show()
+
+Step 9: Train SVM Model
+svm = SVC(kernel='linear')  # linear kernel works best for high-dimensional text data
+svm.fit(X_train, y_train)
+y_pred_svm = svm.predict(X_test)
+
+Step 10: Evaluate SVM Model
+print("📊 SVM Model Evaluation:")
+print("Accuracy:", accuracy_score(y_test, y_pred_svm))
+print("Precision:", precision_score(y_test, y_pred_svm))
+print("Recall:", recall_score(y_test, y_pred_svm))
+print("F1 Score:", f1_score(y_test, y_pred_svm))
+
+cm_svm = confusion_matrix(y_test, y_pred_svm)
+sns.heatmap(cm_svm, annot=True, fmt="d", cmap="Greens")
+plt.title("SVM Confusion Matrix")
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+plt.show()
+
+Step 11: Compare Models
+results = pd.DataFrame({
+    'Model': ['KNN', 'SVM'],
+    'Accuracy': [accuracy_score(y_test, y_pred_knn), accuracy_score(y_test, y_pred_svm)],
+    'Precision': [precision_score(y_test, y_pred_knn), precision_score(y_test, y_pred_svm)],
+    'Recall': [recall_score(y_test, y_pred_knn), recall_score(y_test, y_pred_svm)],
+    'F1 Score': [f1_score(y_test, y_pred_knn), f1_score(y_test, y_pred_svm)]
+})
+print(results)
+
+📈 Example Output
+Model	Accuracy	Precision	Recall	F1 Score
+KNN	0.94	0.93	0.92	0.92
+SVM	0.97	0.96	0.95	0.96
+
+(Your results may vary based on dataset splits.)
+
+🧾 Conclusion
+
+✅ You successfully:
+
+Preprocessed the dataset
+
+Split data into train-test
+
+Implemented KNN and SVM
+
+Evaluated and compared both models
+
+💡 Observation:
+SVM generally performs slightly better for high-dimensional datasets like spam detection because it handles linear separability efficiently.

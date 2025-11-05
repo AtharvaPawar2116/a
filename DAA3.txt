@@ -1,0 +1,109 @@
+Good — you’re asking the right way. Let’s go step-by-step clearly.
+
+---
+
+### ✅ First: The formula
+
+Yes, the formula your teacher gave is **almost correct**, but the correct standard formula is:
+
+[
+M[i][w] = \max(M[i-1][w],\ M[i-1][w - wt[i-1]] + val[i-1])
+]
+
+**Explanation:**
+
+* ( M[i][w] ): maximum profit using first `i` items and capacity `w`
+* ( wt[i-1] ): weight of the current item
+* ( val[i-1] ): profit (value) of the current item
+* If the current item’s weight ≤ current capacity, we decide whether to include or exclude it using `max()`.
+
+---
+
+### 🧠 Logic in Simple Words
+
+1. If the weight of the current item is more than the bag’s capacity → we **cannot** include it.
+   → ( M[i][w] = M[i-1][w] )
+2. Otherwise → we take the **maximum** of including or excluding the item.
+   → ( M[i][w] = \max(M[i-1][w], M[i-1][w - wt[i-1]] + val[i-1]) )
+
+---
+
+### 💻 Simple Mark-Giving Java Code
+
+Here’s a **clean, beginner-friendly** Java code using Dynamic Programming:
+
+```java
+import java.util.*;
+
+public class KnapsackDP {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        // Input
+        System.out.print("Enter number of items: ");
+        int n = sc.nextInt();
+
+        int[] weight = new int[n];
+        int[] profit = new int[n];
+
+        System.out.println("Enter weights of items:");
+        for (int i = 0; i < n; i++) {
+            weight[i] = sc.nextInt();
+        }
+
+        System.out.println("Enter profits of items:");
+        for (int i = 0; i < n; i++) {
+            profit[i] = sc.nextInt();
+        }
+
+        System.out.print("Enter knapsack capacity: ");
+        int W = sc.nextInt();
+
+        // Create DP table
+        int[][] M = new int[n + 1][W + 1];
+
+        // DP logic
+       for (int i = 1; i <= n; i++) {
+                for (int j = 1; j <= W; j++) {
+       	 if (weight[i - 1] <= j) {
+            	M[i][j] = Math.max(
+              	  M[i - 1][j],
+                	M[i - 1][j - weight[i - 1]] + profit[i - 1]
+            	);
+       	 } else {
+           		 M[i][j] = M[i - 1][j];
+       		 }
+  	  }
+}
+
+
+        // Output
+        System.out.println("Maximum profit = " + M[n][W]);
+    }
+}
+```
+
+---
+
+### 🧾 Sample Input / Output
+
+**Input:**
+
+```
+Enter number of items: 3
+Enter weights of items:
+4 5 1
+Enter profits of items:
+1 2 3
+Enter knapsack capacity: 4
+```
+
+**Output:**
+
+```
+Maximum profit = 3
+```
+
+---
+
+Would you like me to add **comments line-by-line** (for easy understanding and marks in viva)?
