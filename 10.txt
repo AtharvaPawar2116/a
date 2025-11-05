@@ -64,3 +64,4 @@ plt.show()
 # Check cluster-wise mean of features
 cluster_summary = df_clean.groupby('Cluster').mean()
 print(cluster_summary)
+
